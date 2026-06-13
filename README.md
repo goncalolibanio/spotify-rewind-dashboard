@@ -41,7 +41,7 @@ This is a preview of the first dashboard, with my personal data.
 
 ## 🛠️ Tech Stack
 
-* **Backend:** Python 3.x, Flask (REST JSON API, Sessions, and Routing)
+* **Backend:** Python, Flask (REST JSON API, Sessions, and Routing)
 * **Data Crunching:** Pandas (Time-series manipulation and complex aggregations)
 * **Data Visualization:** Plotly Express / Plotly Graph Objects (Interactive native HTML charts)
 * **Frontend:** HTML5, Advanced CSS3 (Variables, Grid, Flexbox, Filter Effects) & Modern JavaScript (Fetch API / Async DOM manipulation)
