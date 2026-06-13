@@ -5,6 +5,7 @@ An interactive web dashboard built with **Flask** and **Pandas** to visualize an
 ---
 
 ## 📸 Preview Demo
+This is a preview of the first dashboard, with my personal data.
 
 ![Spotify Rewinder Dashboard Preview](dashboard_preview.png)
 
