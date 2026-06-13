@@ -24,7 +24,7 @@ def general_view(df_filtered):
     fig.update_traces(
         line_color = '#1DB954',
         line_width = 4,
-        maker = dict(size=8, color='#00f2fe', symbol='circle')
+        maker = dict(size=8, color="#ffffff", symbol='circle')
     )
 
     fig = apply_spotify_style(fig)
