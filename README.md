@@ -7,7 +7,7 @@ An interactive web dashboard built with **Flask** and **Pandas** to visualize an
 ## 📸 Preview Demo
 
 *(Drag and drop your screenshot here to display it on GitHub!)*
-![Spotify Rewinder Dashboard Preview](https://via.placeholder.com/1200x600/121212/ffffff?text=Place+Your+Dashboard+Screenshot+Here)
+![Spotify Rewinder Dashboard Preview](dashboard_preview.png)
 
 ---
 
