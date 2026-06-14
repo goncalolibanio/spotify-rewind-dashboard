@@ -29,11 +29,9 @@ def general_view(df_filtered):
 
     fig = apply_spotify_style(fig)
 
-    chart_html = fig.to_html(full_html=False, include_plotlyjs='cdn', config={'staticPlot': True, 'responsive': True})
-
     return {
         'total_min': f"{total_min:.2f}",
         'top_artist': top_artist,
         'unique_songs': unique_songs,
-        'chart_general': chart_html
+        'fig_general': fig
     }
