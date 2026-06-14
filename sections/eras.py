@@ -20,10 +20,8 @@ def eras(df_filtered: pd.DataFrame) -> dict:
 
     fig.update_traces(marker_color='#DD2A7B') # Pink/Magenta palette for the Eras vibe
     
-    # Apply global style FIRST
     fig = apply_spotify_style(fig)
 
-    # Apply specific overrides SECOND
     fig.update_layout(
         # Gives 130 pixels of space so band names don't hit the wall
         margin=dict(t=20, b=40, l=130, r=20),
