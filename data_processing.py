@@ -22,7 +22,8 @@ def load_spotify_data():
             if any(col in temp_df.columns for col in required_columns):
                 frames.append(temp_df)
 
-        except Exception:
+        except Exception as e:
+            print(f"Error reading file {file}: {e}")
             continue
 
     if not frames:
