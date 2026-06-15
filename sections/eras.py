@@ -28,10 +28,8 @@ def eras(df_filtered: pd.DataFrame) -> dict:
         autosize=True
     )
 
-    chart_html = fig.to_html(full_html=False, include_plotlyjs='cdn', config={'responsive': True})
-
     return {
-        "chart_eras": chart_html,
+        "fig_eras": fig,
         "top_artists_table": artist_counts.head(10).to_dict(),
-        "top_artist": top_artist_name # Exposing the previously unused variable
+        "top_artist": top_artist_name 
     }

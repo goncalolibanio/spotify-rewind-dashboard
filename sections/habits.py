@@ -47,8 +47,6 @@ def listening_habits(df_filtered):
 
     fig_rhythm.update_yaxes(fixedrange=True)
 
-    chart_heat_html = fig_rhythm.to_html(full_html=False, include_plotlyjs='cdn', config={'responsive': True})
-
     #DONUT CHART
     ending_counts = df_filtered['reason_end'].value_counts().reset_index()
     ending_counts.columns = ['reason', 'count']
@@ -92,10 +90,9 @@ def listening_habits(df_filtered):
         autosize=True
     )
     
-    chart_pie_html = fig_pie.to_html(full_html=False, include_plotlyjs='cdn', config={'responsive': True})
 
     return {
-        "chart_rhythm_heat": chart_heat_html,
-        "chart_rhythm_end": chart_pie_html,
+        "fig_rhythm_heat": fig_rhythm,
+        "fig_rhythm_end": fig_pie,
         "skip_percentage": skip_percentage
     }

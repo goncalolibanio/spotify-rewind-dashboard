@@ -33,7 +33,12 @@ def load_spotify_data():
 
     if 'ts' in df.columns:
         df['ts'] = pd.to_datetime(df['ts'])
-        df['ts'] = df['ts'].dt.tz_localize('UTC').dt.tz_convert('Europe/Lisbon')
+
+        try:
+            df['ts'] = df['ts'].dt.tz_localize('UTC').dt.tz_convert('Europe/Lisbon')
+        except TypeError:
+            df['ts'] = df['ts'].dt.tz_convert('Europe/Lisbon')
+            
         df['ano'] = df['ts'].dt.year.astype(str)
         df['hora'] = df['ts'].dt.hour
         df['dia_num'] = df['ts'].dt.dayofweek
