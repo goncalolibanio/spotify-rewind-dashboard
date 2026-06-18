@@ -1,6 +1,7 @@
 # 🎵📊 Personal Spotify Rewinder (Wrapped)
 
 An interactive web dashboard built with **Flask** and **Pandas** to visualize and analyze the complete streaming history of a Spotify user using the JSON data files extracted from their account.
+The HTML, CSS & JAVASCRIPT was done with AI, for visualization purposes.
 
 ---
 
