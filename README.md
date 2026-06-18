@@ -36,17 +36,15 @@ This is a preview of the first dashboard, with my personal data.
 * **Music Eras:**
   * Horizontal bar chart highlighting your Top 10 Artists.
   * Detailed ranking table showcasing exact play counts.
-  * **Dynamic Spotlight:** An asynchronous background request to the **Official Spotify Web API** that fetches and merges the real-time profile picture of your number one artist as a translucid card background.
 
 ---
 
 ## 🛠️ Tech Stack
 
-* **Backend:** Python, Flask (REST JSON API, Sessions, and Routing)
-* **Data Crunching:** Pandas (Time-series manipulation and complex aggregations)
+* **Backend:** Python, Flask
+* **Data Crunching:** Pandas
 * **Data Visualization:** Plotly Express / Plotly Graph Objects (Interactive native HTML charts)
-* **Frontend:** HTML5, Advanced CSS3 (Variables, Grid, Flexbox, Filter Effects) & Modern JavaScript (Fetch API / Async DOM manipulation)
-* **External API:** Spotify Web API (Client Credentials Flow via Python's `requests` library)
+* **Frontend:** HTML, CSS JAVASCRIPT
 
 ---
 
@@ -73,16 +71,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 5. Configure Spotify API Keys (For Artist Spotlight Image)
-* Go to ![Spotify Developers Dashboard](https://developer.spotify.com) and create a free app
-* Open the section/eras.py file
-* Replace the placeholder strings with your credentials
-```python
-SPOTIFY_CLIENT_ID = "YOUR_ACTUAL_CLIENT_ID_HERE"
-SPOTIFY_CLIENT_SECRET = "YOUR_ACTUAL_CLIENT_SECRET_HERE"
-```
-
-### 6. Run the app
+### 5. Run this in terminal
 ```bash
 python app.py
 ```
@@ -103,10 +92,11 @@ spotify-rewind-dashboard/
 │   └── insights.py         # Analytics (records, profiles, night tracks)
 │
 ├── static/
-│   └── style.css           # Complete CSS UI architecture and visual effects
+│   ├── styles.css          # Complete CSS UI architecture and visual effects
+│   └── script.js           # Interactive UI, AJAX (Fetch API), and Plotly integration
 │
 └── templates/
-    └── index.html          # Structural layout and JavaScript/AJAX core engine
+    └── index.html          # Structural HTML layout for the dashboard engine
 ```
 
 ## 📄License
