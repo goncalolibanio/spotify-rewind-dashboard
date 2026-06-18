@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Rewind é uma aplicação para rever estatísticas de audição musical com rankings, artistas, músicas e tempo total de escuta." />
+  <title>Spotify Rewinder</title>
+  <link rel="icon" href="{{ url_for('static', filename='assets/favicon.svg') }}" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="page-glow glow-one"></div>
+  <div class="page-glow glow-two"></div>
+
+  <header class="header" id="top">
+    <nav class="nav container" aria-label="Navegação principal">
+      <a class="brand" href="#top" aria-label="Rewind Home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="img">
+            <path d="M27.5 15.4 16 23.1a1.1 1.1 0 0 0 0 1.8l11.5 7.7a1.1 1.1 0 0 0 1.7-.9V16.3a1.1 1.1 0 0 0-1.7-.9Z" />
+            <path d="M15.8 15.4 4.3 23.1a1.1 1.1 0 0 0 0 1.8l11.5 7.7a1.1 1.1 0 0 0 1.7-.9V16.3a1.1 1.1 0 0 0-1.7-.9Z" />
+            <rect x="34" y="14" width="5" height="20" rx="2.5" />
+          </svg>
+        </span>
+        <span>Rewind</span>
+      </a>
+
+      <button class="nav-toggle" aria-label="Abrir menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="nav-links" data-menu>
+        <a href="#dashboard">Estatísticas</a>
+        <a href="#rankings">Rankings</a>
+        <a href="#evolucao">Evolução</a>
+        <a href="#insights">Insights</a>
+      </div>
+
+      <a class="nav-cta" href="#dashboard">Login</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero section-pad">
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <span class="eyebrow">
+            <span class="pulse-dot"></span>
+            Real-time streaming retrospective
+          </span>
+
+          <h1>Check your most recent streaming stats!</h1>
+
+          <p>
+            Revisit your favourite artists, songs and moments that defined your musical era.
+          </p>
+
+          <div class="hero-actions">
+            <input type="file" id="fileInput" multiple accept=".json" style="display: none;" />
+            <a class="btn btn-primary" id="uploadBtn" href="#dashboard">
+              Start Now
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.2 5.5 20 12l-6.8 6.5-1.4-1.5 4.2-4H4v-2h12l-4.2-4 1.4-1.5Z" /></svg>
+            </a>
+            <span id="uploadStatus" style="margin-left: 14px; color: var(--green-2); font-weight: bold;"></span>
+            <a class="btn btn-secondary" href="#rankings">Watch DEMO</a>
+          </div>
+
+          <div class="hero-metrics" aria-label="Métricas de exemplo">
+            <div>
+              <strong id="hero-metric-min">42.780</strong>
+              <span>minutes streamed</span>
+            </div>
+            <div>
+              <strong id="hero-metric-songs">2.486</strong>
+              <span>songs played</span>
+            </div>
+            <div>
+              <strong id="hero-metric-artist">#1</strong>
+              <span>artist of the year</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal delay-1" aria-label="Prévia do dashboard Rewind">
+          <div class="phone-orbit orbit-a"></div>
+          <div class="phone-orbit orbit-b"></div>
+
+          <div class="app-window">
+            <div class="window-topbar">
+              <div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+              <span class="window-title">Rewind Dashboard</span>
+              <span class="window-chip">2026</span>
+            </div>
+
+            <div class="now-playing-card">
+              <div>
+                <span class="mini-label" id="hero-window-label">Lifetime Total Minutes</span>
+                <h2 id="hero-window-min">42.780 min</h2>
+                <p id="hero-window-days">29 days listening to music</p>
+              </div>
+              <div class="vinyl" aria-hidden="true">
+                <span></span>
+              </div>
+            </div>
+
+            <div class="sound-wave" aria-hidden="true">
+              <span style="--h: 32%"></span>
+              <span style="--h: 80%"></span>
+              <span style="--h: 48%"></span>
+              <span style="--h: 70%"></span>
+              <span style="--h: 42%"></span>
+              <span style="--h: 92%"></span>
+              <span style="--h: 36%"></span>
+              <span style="--h: 74%"></span>
+              <span style="--h: 55%"></span>
+              <span style="--h: 88%"></span>
+              <span style="--h: 28%"></span>
+              <span style="--h: 64%"></span>
+            </div>
+
+            <div class="mini-stat-grid">
+              <article>
+                <span>Artista top</span>
+                <strong id="hero-window-artist">Drake</strong>
+                <small id="hero-window-artist-skip">...</small>
+              </article>
+              <article>
+                <span>Profile</span>
+                <strong id="hero-window-profile" style="font-size: 0.95rem;">Curator</strong>
+                <small>Listener Type</small>
+              </article>
+              <article>
+                <span>Top Day</span>
+                <strong id="hero-window-day" style="font-size: 0.95rem;">...</strong>
+                <small>Binge record</small>
+              </article>
+              <article>
+                <span>Noite</span>
+                <strong id="hero-window-ghost">...</strong>
+                <small>Ghost Songs</small>
+              </article>
+            </div>
+          </div>
+
+          <div class="floating-card floating-one">
+            <span class="rank-badge">#1</span>
+            <div>
+              <strong id="hero-floating-artist">Drake</strong>
+              <small>most streamed artist</small>
+            </div>
+          </div>
+
+          <div class="floating-card floating-two">
+            <span class="rewind-mini">⏪</span>
+            <div>
+              <strong>Monthly Replay</strong>
+              <small>Evolution tracker</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Wrap all dashboard sections in a hidden div -->
+    <div id="dashboard-wrapper" style="display: none; opacity: 0; transition: opacity 0.8s ease;">
+
+    <section class="section-pad stats-section" id="dashboard">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="section-kicker">Dashboard</span>
+          <h2>Less talk more stats.</h2>
+          <p>Quick cards, rankings and only the numbers that matter.</p>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card primary-stat reveal">
+            <div class="card-icon">⏱</div>
+            <span>Tempo total de audição</span>
+            <strong id="kpi-minutes">0</strong>
+            <small>minutes streamed</small>
+            <div class="progress-line"><span style="width: 86%"></span></div>
+          </article>
+
+          <article class="stat-card reveal delay-1">
+            <div class="card-icon">🎤</div>
+            <span>Top artitst</span>
+            <strong id="kpi-top-artist">...</strong>
+            <small>184 hours on top</small>
+          </article>
+
+          <article class="stat-card reveal delay-2">
+            <div class="card-icon">🔁</div>
+            <span>Unique Songs</span>
+            <strong id="kpi-unique-songs">...</strong>
+            <small>tracks discovered</small>
+          </article>
+
+          <article class="stat-card reveal delay-3">
+            <div class="card-icon">⚡</div>
+            <span>Skip Rate</span>
+            <strong id="kpi-skip">...</strong>
+            <small>of songs skipped</small>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-pad rankings-section" id="rankings">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="section-kicker">Rankings</span>
+          <h2>You just couldn't stop it</h2>
+        </div>
+
+        <div class="ranking-layout">
+          <article class="panel ranking-panel reveal">
+            <div class="panel-header">
+              <div>
+                <span>Top artistas</span>
+                <h3>Artist with most plays</h3>
+              </div>
+              <button class="pill-button">Anual</button>
+            </div>
+
+            <div id="plotly-eras" style="width: 100%; height: 400px;"></div>
+          </article>
+
+          <article class="panel tracks-panel reveal delay-1">
+            <div class="panel-header">
+              <div>
+                <span>Listening Habits</span>
+                <h3>Song Completion</h3>
+              </div>
+              <button class="pill-button">Plays</button>
+            </div>
+
+            <div id="plotly-rhythm-end" style="width: 100%; height: 350px;"></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-pad charts-section" id="evolucao">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="section-kicker">Evolution</span>
+          <h2>Your streaming evolution</h2>
+        </div>
+
+        <div class="charts-grid">
+          <article class="panel chart-panel large reveal">
+            <div class="panel-header">
+              <div>
+                <span>Minutos por mês</span>
+                <h3>Evolução das audições</h3>
+              </div>
+            </div>
+            <div id="plotly-general" style="width: 100%; height: 300px;"></div>
+          </article>
+
+          <article class="panel chart-panel large reveal delay-2">
+            <div class="panel-header">
+              <div>
+                <span>Pico musical</span>
+                <h3>Quando você mais ouviu</h3>
+              </div>
+            </div>
+            <div id="plotly-rhythm-heat" style="width: 100%; height: 420px;"></div>
+            <p class="panel-note">Seu horário favorito foi entre <strong>22h e 00h</strong>.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-pad insights-section" id="insights">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="section-kicker">Insights</span>
+          <h2>Moments that deserve a replay.</h2>
+          <p>Rewind transforms your stats into stories about your relationship with music</p>
+        </div>
+
+        <div class="insights-grid">
+          <article class="insight-card reveal">
+            <span>💚</span>
+            <h3>Binge Day</h3>
+            <p id="insight-binge">“Midnight Echo” apareceu nos seus dias mais intensos e virou o seu refúgio musical.</p>
+          </article>
+          <article class="insight-card reveal delay-1">
+            <span>✨</span>
+            <h3>Ghost Songs</h3>
+            <p id="insight-ghost">Você ouviu Aurora Drive pela primeira vez em março e nunca mais tirou da rotação.</p>
+          </article>
+          <article class="insight-card reveal delay-2">
+            <span>🌙</span>
+            <h3>Listener Profile</h3>
+            <p id="insight-profile">Synth Pop comandou o seu período, principalmente entre julho e dezembro.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section section-pad">
+      <div class="container">
+        <div class="cta-box reveal">
+          <span class="section-kicker">Rewind</span>
+          <h2>Ready for your musical story?</h2>
+          <p>Connect your account and see more.</p>
+          <a class="btn btn-primary" href="#top">Click here to rewind</a>
+        </div>
+      </div>
+    </section>
+
+    </div><!-- /#dashboard-wrapper -->
+
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <a class="brand" href="#top">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48"><path d="M27.5 15.4 16 23.1a1.1 1.1 0 0 0 0 1.8l11.5 7.7a1.1 1.1 0 0 0 1.7-.9V16.3a1.1 1.1 0 0 0-1.7-.9Z" /><path d="M15.8 15.4 4.3 23.1a1.1 1.1 0 0 0 0 1.8l11.5 7.7a1.1 1.1 0 0 0 1.7-.9V16.3a1.1 1.1 0 0 0-1.7-.9Z" /><rect x="34" y="14" width="5" height="20" rx="2.5" /></svg>
+        </span>
+        <span>Rewind</span>
+      </a>
+      <p>Inspired by music. Created to visualize listening statistics.</p>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
