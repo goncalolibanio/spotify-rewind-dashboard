@@ -6,10 +6,10 @@ import pandas as pd
 required_columns = {"ts", "ms_played", "master_metadata_track_name", "master_metadata_album_artist_name", "reason_end"}
 upload_folder = 'uploads'
 
-def load_spotify_data():
-    os.makedirs(upload_folder, exist_ok=True)
+def load_spotify_data(folder_path=upload_folder):
+    os.makedirs(folder_path, exist_ok=True)
 
-    json_files = glob.glob(os.path.join(upload_folder, "*.json"))
+    json_files = glob.glob(os.path.join(folder_path, "*.json"))
 
     if not json_files:
         return pd.DataFrame()
@@ -52,7 +52,7 @@ def apply_spotify_style(fig):
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         font_color='#ffffff',
-        font_family='Montserrat',
+        font_family='Inter, sans-serif',
         margin=dict(l=40, r=20, t=40, b=40)
     )
 

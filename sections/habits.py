@@ -10,16 +10,14 @@ def listening_habits(df_filtered):
 
     heatmap_df = df_filtered.groupby(['day_name', 'hora']).size().reset_index(name='count')
     
-    fig_rhythm = px.scatter(
+    fig_rhythm = px.density_heatmap(
         heatmap_df, 
         x='hora', 
         y='day_name', 
-        size='count',           
-        color='count',          
+        z='count',  # A cor vai depender da contagem
         category_orders={'day_name': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']},
-        labels={'hora': 'Hour of the Day', 'day_name': 'Day of the Week'},
-        color_continuous_scale=['#181818', '#1DB954', '#00f2fe'], 
-        size_max=18             
+        labels={'hora': 'Hour of the Day', 'day_name': 'Day of the Week', 'count': 'Songs Listened'},
+        color_continuous_scale=['#181818', '#1DB954', '#00f2fe']
     )
     
     fig_rhythm = apply_spotify_style(fig_rhythm)
@@ -34,8 +32,9 @@ def listening_habits(df_filtered):
             x=0.5
         ),
         margin=dict(t=20, b=80, l=80, r=40),
-        autosize=True
-    )
+        autosize=True,
+        xaxis=dict(tickmode='linear', tick0=0, dtick=1)
+        )
 
     fig_rhythm.update_xaxes(
         tickmode='linear',
