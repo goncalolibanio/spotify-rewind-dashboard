@@ -9,7 +9,7 @@ The HTML, CSS & JavaScript UI includes a dark theme with modern glow effects, sm
 ## 📸 Preview Demo
 This is a preview of the dashboard populated with listening history.
 
-![Spotify Rewinder Dashboard Preview](dashboard_preview.png)
+![Spotify Rewinder Dashboard Preview](dashboard_pre.png)
 
 ---
 
