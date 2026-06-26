@@ -69,6 +69,7 @@
             </a>
             <span id="uploadStatus" style="margin-left: 14px; color: var(--green-2); font-weight: bold;"></span>
             <a class="btn btn-secondary" href="#rankings">Watch DEMO</a>
+            <button class="btn btn-secondary" id="clearBtn" style="display: none; margin-left: 10px;">Clear Data</button>
           </div>
 
           <div class="hero-metrics" aria-label="Métricas de exemplo">
@@ -178,6 +179,15 @@
           <p>Quick cards, rankings and only the numbers that matter.</p>
         </div>
 
+        <div class="dashboard-filter-bar reveal">
+          <label for="yearSelector" class="filter-label">Viewing Era:</label>
+          <div class="select-wrapper">
+            <select id="yearSelector" class="custom-select">
+              <option value="lifetime">Lifetime</option>
+            </select>
+          </div>
+        </div>
+
         <div class="stats-grid">
           <article class="stat-card primary-stat reveal">
             <div class="card-icon">⏱</div>
@@ -191,7 +201,7 @@
             <div class="card-icon">🎤</div>
             <span>Top artitst</span>
             <strong id="kpi-top-artist">...</strong>
-            <small>184 hours on top</small>
+            <small id="kpi-top-artist-time">184 hours on top</small>
           </article>
 
           <article class="stat-card reveal delay-2">

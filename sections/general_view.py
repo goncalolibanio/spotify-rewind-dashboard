@@ -9,6 +9,21 @@ def general_view(df_filtered):
     top_artist = artist_count.index[0] if not artist_count.empty else 'N/A'
     unique_songs = df_filtered['master_metadata_track_name'].nunique()
 
+    # Calculate Top Artist Duration
+    top_artist_ms = 0
+    if top_artist != 'N/A':
+        top_artist_ms = df_filtered[df_filtered['master_metadata_album_artist_name'] == top_artist]['ms_played'].sum()
+    top_artist_min = round(top_artist_ms / 60000)
+    
+    if top_artist_min < 60:
+        top_artist_time = f"{top_artist_min} min"
+    else:
+        hours = round(top_artist_min / 60, 1)
+        if hours.is_integer():
+            top_artist_time = f"{int(hours)} hours"
+        else:
+            top_artist_time = f"{hours} hours"
+
     #Monthly Evolution
     monthly_df = df_filtered.groupby('mes')['ms_played'].sum().reset_index()
     monthly_df['minutes'] = round(monthly_df['ms_played'] / 60000, 2)
@@ -32,6 +47,7 @@ def general_view(df_filtered):
     return {
         'total_min': f"{total_min:.2f}",
         'top_artist': top_artist,
+        'top_artist_time': top_artist_time,
         'unique_songs': unique_songs,
         'fig_general': fig
     }

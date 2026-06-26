@@ -18,8 +18,35 @@ def load_spotify_data(folder_path=upload_folder):
     for file in json_files:
         try:
             temp_df = pd.read_json(file)
+            if temp_df.empty:
+                continue
 
-            if any(col in temp_df.columns for col in required_columns):
+            # Standard format mapping
+            standard_mapping = {
+                "endTime": "ts",
+                "artistName": "master_metadata_album_artist_name",
+                "trackName": "master_metadata_track_name",
+                "msPlayed": "ms_played"
+            }
+            
+            # Check if it has standard columns
+            has_standard = all(col in temp_df.columns for col in ["endTime", "artistName", "trackName", "msPlayed"])
+            # Check if it has extended columns
+            has_extended = any(col in temp_df.columns for col in {"ts", "ms_played", "master_metadata_track_name", "master_metadata_album_artist_name"})
+
+            if has_standard:
+                temp_df = temp_df.rename(columns=standard_mapping)
+                if "reason_end" not in temp_df.columns:
+                    temp_df["reason_end"] = "trackdone"
+                frames.append(temp_df)
+
+            elif has_extended:
+                # Rename standard columns to extended format if there's a mix
+                for old_col, new_col in standard_mapping.items():
+                    if old_col in temp_df.columns and new_col not in temp_df.columns:
+                        temp_df = temp_df.rename(columns={old_col: new_col})
+                if "reason_end" not in temp_df.columns:
+                    temp_df["reason_end"] = "trackdone"
                 frames.append(temp_df)
 
         except Exception as e:
@@ -31,13 +58,30 @@ def load_spotify_data(folder_path=upload_folder):
     
     df = pd.concat(frames, ignore_index=True)
 
+    # Normalize missing columns to prevent KeyErrors later
+    for col in required_columns:
+        if col not in df.columns:
+            df[col] = None
+
     if 'ts' in df.columns:
-        df['ts'] = pd.to_datetime(df['ts'])
+        df['ts'] = pd.to_datetime(df['ts'], errors='coerce')
+        
+        # Drop rows with invalid/missing timestamps
+        df = df.dropna(subset=['ts'])
+        if df.empty:
+            return df
 
         try:
-            df['ts'] = df['ts'].dt.tz_localize('UTC').dt.tz_convert('Europe/Lisbon')
-        except TypeError:
+            # If the timestamp has no timezone info, localize it first to UTC
+            if df['ts'].dt.tz is None:
+                df['ts'] = df['ts'].dt.tz_localize('UTC')
             df['ts'] = df['ts'].dt.tz_convert('Europe/Lisbon')
+            
+        except Exception:
+            try:
+                df['ts'] = df['ts'].dt.tz_convert('Europe/Lisbon')
+            except Exception:
+                pass
             
         df['ano'] = df['ts'].dt.year.astype(str)
         df['hora'] = df['ts'].dt.hour

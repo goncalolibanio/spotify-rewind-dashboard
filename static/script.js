@@ -32,6 +32,8 @@ const uploadBtn = document.getElementById('uploadBtn');
 const fileInput = document.getElementById('fileInput');
 const uploadStatus = document.getElementById('uploadStatus');
 const dashboardWrapper = document.getElementById('dashboard-wrapper');
+const clearBtn = document.getElementById('clearBtn');
+let currentData = null;
 
 function updateDashboardUI(data) {
   // Update Hero Preview Data
@@ -45,6 +47,18 @@ function updateDashboardUI(data) {
   document.getElementById('hero-window-min').textContent = formattedMins + " min";
   document.getElementById('hero-window-days').textContent = Math.round(data.kpis.total_min / 60 / 24) + " days listening to music";
   
+  // Update label and chip texts depending on selected year
+  const yearSelectorElement = document.getElementById('yearSelector');
+  const selectedYear = yearSelectorElement ? yearSelectorElement.value : 'lifetime';
+  const labelText = selectedYear === 'lifetime' ? 'Lifetime Total Minutes' : `${selectedYear} Total Minutes`;
+  const chipText = selectedYear === 'lifetime' ? 'Lifetime' : selectedYear;
+  
+  const windowLabel = document.getElementById('hero-window-label');
+  if (windowLabel) windowLabel.textContent = labelText;
+  
+  const windowChip = document.querySelector('.window-chip');
+  if (windowChip) windowChip.textContent = chipText;
+
   document.getElementById('hero-window-artist').textContent = data.kpis.top_artist;
   document.getElementById('hero-window-artist-skip').textContent = data.kpis.skip_percentage + "% skip rate";
   document.getElementById('hero-window-profile').textContent = data.kpis.listener_profile;
@@ -56,6 +70,7 @@ function updateDashboardUI(data) {
   // Update KPI Cards
   document.getElementById('kpi-minutes').textContent = formattedMins;
   document.getElementById('kpi-top-artist').textContent = data.kpis.top_artist;
+  document.getElementById('kpi-top-artist-time').textContent = data.kpis.top_artist_time + " on top";
   document.getElementById('kpi-unique-songs').textContent = formattedSongs;
   document.getElementById('kpi-skip').textContent = data.kpis.skip_percentage + '%';
   
@@ -77,6 +92,44 @@ function updateDashboardUI(data) {
   Plotly.newPlot('plotly-rhythm-end', data.charts.rhythm_end.data, data.charts.rhythm_end.layout, {responsive: true});
 }
 
+function populateYearSelector(years) {
+  const yearSelector = document.getElementById('yearSelector');
+  if (!yearSelector) return;
+
+  const previousSelection = yearSelector.value || 'lifetime';
+
+  yearSelector.innerHTML = '<option value="lifetime">Lifetime</option>';
+  if (years && years.length > 0) {
+    years.forEach(year => {
+      const option = document.createElement('option');
+      option.value = year;
+      option.textContent = year;
+      yearSelector.appendChild(option);
+    });
+  }
+
+  if ([...yearSelector.options].some(opt => opt.value === previousSelection)) {
+    yearSelector.value = previousSelection;
+  } else {
+    yearSelector.value = 'lifetime';
+  }
+}
+
+// Setup selector listener
+const yearSelectorEl = document.getElementById('yearSelector');
+if (yearSelectorEl) {
+  yearSelectorEl.addEventListener('change', (e) => {
+    const selected = e.target.value;
+    if (!currentData) return;
+
+    if (selected === 'lifetime') {
+      updateDashboardUI(currentData.lifetime);
+    } else if (currentData.by_year && currentData.by_year[selected]) {
+      updateDashboardUI(currentData.by_year[selected]);
+    }
+  });
+}
+
 // Check for existing session data on page load
 window.addEventListener('DOMContentLoaded', async () => {
   try {
@@ -84,7 +137,10 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (response.ok) {
       const data = await response.json();
       if (data && data.success) {
-        updateDashboardUI(data);
+        currentData = data;
+        populateYearSelector(data.years);
+        updateDashboardUI(data.lifetime);
+        if (clearBtn) clearBtn.style.display = 'inline-flex';
       }
     }
   } catch (err) {
@@ -137,7 +193,11 @@ if (uploadBtn && fileInput) {
       uploadStatus.textContent = 'Success!';
       uploadStatus.style.color = 'var(--green-2)';
       
-      updateDashboardUI(data);
+      currentData = data;
+      populateYearSelector(data.years);
+      updateDashboardUI(data.lifetime);
+      if (clearBtn) clearBtn.style.display = 'inline-flex';
+
 
       setTimeout(() => uploadStatus.textContent = '', 4000);
       
@@ -153,3 +213,25 @@ if (uploadBtn && fileInput) {
     }
   });
 }
+
+if (clearBtn) {
+  clearBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    if (!confirm('Are you sure you want to clear the imported data?')) return;
+    
+    try {
+      const response = await fetch('/api/clear', {
+        method: 'POST'
+      });
+      if (response.ok) {
+        window.location.reload();
+      } else {
+        alert('Failed to clear data');
+      }
+    } catch (err) {
+      console.error('Error clearing data:', err);
+      alert('Error clearing data');
+    }
+  });
+}
+

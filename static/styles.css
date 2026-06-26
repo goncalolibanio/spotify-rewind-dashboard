@@ -1145,3 +1145,70 @@ canvas {
     height: 46px;
   }
 }
+
+/* --- ERA FILTER BAR --- */
+.dashboard-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  width: max-content;
+}
+
+.filter-label {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.custom-select {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 8px 36px 8px 16px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.custom-select:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--green);
+}
+
+.custom-select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 10px rgba(29, 185, 84, 0.25);
+}
+
+.select-wrapper::after {
+  content: "▾";
+  font-size: 0.8rem;
+  color: var(--muted);
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.custom-select option {
+  background-color: #181818;
+  color: #ffffff;
+}
