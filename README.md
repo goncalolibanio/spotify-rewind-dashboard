@@ -2,7 +2,7 @@
 
 An interactive web dashboard built with **Flask** and **Pandas** to visualize and analyze the complete streaming history of a Spotify user using the JSON data files extracted from their account. It supports both standard `StreamingHistory*.json` files (from the basic account data) and the extended `endsong.json` history files.
 
-The HTML, CSS & JavaScript UI includes a dark theme with modern glow effects, smooth entrance animations, and responsive layouts.
+The HTML, CSS & JavaScript UI includes a dark theme with modern glow effects, smooth entrance animations, and responsive layouts. (DONE WITH AI)
 
 ---
 
